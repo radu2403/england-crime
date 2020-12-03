@@ -1,5 +1,9 @@
 package etl.pipeline
 
-class BaseDag {
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
+trait BaseDag {
+  def getDag: DataFrame
+  def writeDataFrame(df: DataFrame)
+  def end
 }

@@ -2,7 +2,6 @@ package etl
 
 import etl.pipeline.FactoryPipeline
 import etl.sparksessionmanager.SessionManagerFactory
-import org.apache.spark.sql.SparkSession
 
 
 object Program {
@@ -28,6 +27,17 @@ object Program {
       println("**** Writing dataframe.....")
       importManager.writeDataFrame(df)
       println("**** Done writing! ")
+
+      // Compute statistics in collections
+      // **** crime type
+      val crimeTypeKPIManager = pipelineFactory.getCrimeTypeDag(df)
+      val dfCrimeTypeKPI = crimeTypeKPIManager.getDag
+      crimeTypeKPIManager.writeDataFrame(dfCrimeTypeKPI)
+
+      // **** crime type
+      val districtKPIManager = pipelineFactory.getDistrictDag(df)
+      val dfDistrictKPI = districtKPIManager.getDag
+      districtKPIManager.writeDataFrame(dfDistrictKPI)
 
     } finally {
       importManager.end

@@ -4,7 +4,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 trait SessionManager {
   def spark: SparkSession
-  def write(df: DataFrame)
+  def write(df: DataFrame, collectionName: String)
   def stop
 }
 
@@ -12,9 +12,9 @@ class MongoSessionManager(private val sparkSession: SparkSession) extends Sessio
 
   override def spark: SparkSession = sparkSession
 
-  override def write(df: DataFrame): Unit = {
+  override def write(df: DataFrame, collectionName: String): Unit = {
     df.write
-      .option("collection", "felonies")
+      .option("collection", collectionName)
       .mode("overwrite")
       .format("mongo")
       .save()

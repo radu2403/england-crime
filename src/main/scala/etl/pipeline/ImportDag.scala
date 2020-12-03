@@ -9,6 +9,8 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
   val spark = sparkManager.spark
   import spark.implicits._
 
+  val IMPORT_COLLECTION_NAME = sys.env.getOrElse("IMPORT_COLLECTION_NAME", "felonies")
+
   // Transformation DAG
   override def getDag(): DataFrame = {
 
@@ -95,7 +97,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
       .withColumn("districtName", input_file_name())
 
   // Write DAG
-  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df)
+  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, collectionName = IMPORT_COLLECTION_NAME )
 
   // Close all things
   override def end: Unit = sparkManager.stop

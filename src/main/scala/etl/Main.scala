@@ -11,14 +11,27 @@ object Program {
     implicit val sparkManager = SessionManagerFactory.createMongoSessionManager()
     val pipelineFactory = new FactoryPipeline()
 
-    val dag = pipelineFactory.getEtlDag()
+    println("**** Creating import manager.....")
+    val importManager = pipelineFactory.getEtlDag()
+    println("***** Import manager created!")
 
-    val df = dag.getDag
+    try {
 
-    println(df.show(10))
+      println("**** Creating DAG.....")
+      val df = importManager.getDag
+      println("***** DAG created!")
 
-    dag.writeDataFrame(df)
-    dag.end
+      // Statistics
+      println(df.show(10))
+      println("**** FINAL - There are a number of crimeID NULL: " + df.where(df("crimeID").isNull).count)
+
+      println("**** Writing dataframe.....")
+      importManager.writeDataFrame(df)
+      println("**** Done writing! ")
+
+    } finally {
+      importManager.end
+    }
   }
 
 }

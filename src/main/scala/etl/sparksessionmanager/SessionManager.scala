@@ -14,7 +14,7 @@ class MongoSessionManager(private val sparkSession: SparkSession) extends Sessio
 
   override def write(df: DataFrame): Unit = {
     df.write
-      .option("collection", "hundredClub")
+      .option("collection", "felonies")
       .mode("overwrite")
       .format("mongo")
       .save()

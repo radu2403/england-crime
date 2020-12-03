@@ -13,28 +13,30 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
   override def getDag(): DataFrame = {
 
     //    Ingest
-    var streetDf = ingest(spark, streetDataPath)
+    var streetDf   = ingest(spark, streetDataPath)
     var outcomesDf = ingest(spark, outcomeDataPath)
 
     //    Transform
     //      *** select the minimum fields
-    streetDf = selectStreetColumns(streetDf)
+    streetDf   = selectStreetColumns(streetDf)
     outcomesDf = selectOutcomesColumns(outcomesDf)
 
+    //     *** remove NULL IDs
+    streetDf   = removeNullOnCrimeId(streetDf)
+    outcomesDf = removeNullOnCrimeId(outcomesDf)
+
     //     *** Remove duplicate IDs
-    streetDf = removeDuplicate(streetDf)
+    streetDf   = removeDuplicate(streetDf)
     outcomesDf = removeDuplicate(outcomesDf)
 
     //   *** Add "district name" from file
     streetDf = addDistrictName(streetDf)
 
     //    *** Join the street with the outcome to provide the final result
-    val finalDf = createFinalDf(streetDf, outcomesDf)
-
-    finalDf
+    createFinalDf(streetDf, outcomesDf)
   }
 
-  private def createFinalDf(streetDf: DataFrame, outcomesDf: DataFrame): DataFrame = {
+  protected def createFinalDf(streetDf: DataFrame, outcomesDf: DataFrame): DataFrame = {
     streetDf.join(outcomesDf, Seq("crimeID"), "left")
             .withColumn("lastOutcome",
                         when($"outcomeType".isNotNull, $"outcomeType").otherwise($"lastOutcomeCategory")
@@ -48,7 +50,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
             )
   }
 
-  private def addDistrictName(df: DataFrame): DataFrame = {
+  protected def addDistrictName(df: DataFrame): DataFrame = {
     // extract function
     val extractName = udf((path: String) => new File(path).getName().split("-").drop(2).dropRight(1).mkString(" "))
 
@@ -56,7 +58,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
      df.withColumn("districtName", extractName($"districtName"))
   }
 
-  private def removeDuplicate(df: DataFrame): DataFrame = {
+  protected def removeDuplicate(df: DataFrame): DataFrame = {
     // multiple IDs
     val multiIdDf = df.groupBy($"crimeID")
       .agg(count($"crimeID").as("count"))
@@ -68,13 +70,15 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
     df.join(multiIdDf, $"crimeID" === $"crimeIdMulti", "leftanti")
   }
 
-  private def selectOutcomesColumns(outcomesDf: DataFrame): DataFrame = {
+  protected def removeNullOnCrimeId(df: DataFrame): DataFrame = df.where($"crimeId".isNotNull)
+
+  protected def selectOutcomesColumns(outcomesDf: DataFrame): DataFrame =
     outcomesDf.select($"Crime ID".as("crimeId"),
                       $"Outcome type".as("outcomeType")
     )
-  }
 
-  private def selectStreetColumns(streetDf: DataFrame): DataFrame = {
+
+  protected def selectStreetColumns(streetDf: DataFrame): DataFrame =
     streetDf.select($"Crime ID".as("crimeID"),
                     $"districtName",
                     $"Latitude".as("latitude"),
@@ -82,23 +86,16 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
                     $"Crime type".as("crimeType"),
                     $"Last outcome category".as("lastOutcomeCategory")
     )
-  }
 
-  private def ingest(spark: SparkSession, csvPath: String): DataFrame = {
-    println("*****  INGESTING: " + csvPath)
+  protected def ingest(spark: SparkSession, csvPath: String): DataFrame =
     spark
       .read
       .option("header", "true")
       .csv(csvPath)
       .withColumn("districtName", input_file_name())
-//      .limit(1000)
-  }
 
   // Write DAG
-  override def writeDataFrame(df: DataFrame): Unit = {
-    println("******   WRITING  *****")
-    sparkManager.write(df)
-  }
+  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df)
 
   // Close all things
   override def end: Unit = sparkManager.stop

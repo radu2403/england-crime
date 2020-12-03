@@ -1,17 +1,16 @@
 package etl.sparksessionmanager
 
+import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.SparkSession
 
 object SessionManagerFactory {
-  // TODO: remove in production the default
-  val MONGO_USERNAME = sys.env.getOrElse("IMPORT_COLLECTION_NAME", "spark_user")
-  val MONGO_PASS = sys.env.getOrElse("IMPORT_COLLECTION_NAME", "xyz123")
+  lazy val config = ConfigFactory.load()
 
   def createMongoSessionManager(): SessionManager = {
     val spark = SparkSession.builder()
       .config("spark.master", "local")
-      .config("spark.mongodb.input.uri", s"mongodb://$MONGO_USERNAME:$MONGO_PASS@127.0.0.1/spark")
-      .config("spark.mongodb.output.uri", s"mongodb://$MONGO_USERNAME:$MONGO_PASS@127.0.0.1/spark")
+      .config("spark.mongodb.input.uri", config.getString("mongo.uri"))
+      .config("spark.mongodb.output.uri", config.getString("mongo.uri"))
       .getOrCreate()
 
     new MongoSessionManager(spark)

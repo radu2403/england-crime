@@ -97,7 +97,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
       .option("header", "true")
       .csv(csvPath)
       .withColumn("districtName", input_file_name())
-    .limit(1000)
+//    .limit(1000)
 
   // Write DAG
   override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, collectionName = config.getString("mongo.rawDataCollection") )

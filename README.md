@@ -1,5 +1,5 @@
 # england-crime
-will analyse England's crime data
+will analyse UK's crime data
 
 Start mongo for testing:
 sudo docker-compose -f stack.yml up

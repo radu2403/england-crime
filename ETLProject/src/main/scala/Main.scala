@@ -1,7 +1,5 @@
-package etl
-
-import etl.pipeline.FactoryPipeline
-import etl.sparksessionmanager.SessionManagerFactory
+import sparksessionmanager.SessionManagerFactory
+import pipeline.FactoryPipeline
 
 
 object Program {
@@ -40,7 +38,7 @@ object Program {
       districtKPIManager.writeDataFrame(dfDistrictKPI)
 
     } finally {
-      importManager.end
+      sparkManager.spark.stop()
     }
   }
 

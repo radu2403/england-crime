@@ -1,4 +1,4 @@
-package etl.sparksessionmanager
+package sparksessionmanager
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
 

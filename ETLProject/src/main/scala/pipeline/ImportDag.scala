@@ -1,8 +1,8 @@
-package etl.pipeline
+package pipeline
 import java.io.File
 
 import com.typesafe.config.ConfigFactory
-import etl.sparksessionmanager.SessionManager
+import sparksessionmanager.SessionManager
 import org.apache.spark.sql.functions.{count, input_file_name, udf, when}
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession}

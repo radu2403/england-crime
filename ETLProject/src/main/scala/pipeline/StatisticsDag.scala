@@ -1,7 +1,7 @@
-package etl.pipeline
+package pipeline
 
 import com.typesafe.config.ConfigFactory
-import etl.sparksessionmanager.SessionManager
+import sparksessionmanager.SessionManager
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 

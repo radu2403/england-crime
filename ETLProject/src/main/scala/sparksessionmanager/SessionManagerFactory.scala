@@ -1,4 +1,4 @@
-package etl.sparksessionmanager
+package sparksessionmanager
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.SparkSession

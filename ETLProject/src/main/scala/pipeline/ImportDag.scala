@@ -1,7 +1,8 @@
-package etl.pipeline
+package pipeline
 import java.io.File
 
-import etl.sparksessionmanager.SessionManager
+import com.typesafe.config.ConfigFactory
+import sparksessionmanager.SessionManager
 import org.apache.spark.sql.functions.{count, input_file_name, udf, when}
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -10,7 +11,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
   val spark = sparkManager.spark
   import spark.implicits._
 
-  val IMPORT_COLLECTION_NAME = sys.env.getOrElse("IMPORT_COLLECTION_NAME", "felonies")
+  lazy val config = ConfigFactory.load()
 
   // Transformation DAG
   override def getDag(): DataFrame = {
@@ -99,7 +100,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
     .limit(1000)
 
   // Write DAG
-  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, collectionName = IMPORT_COLLECTION_NAME )
+  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, collectionName = config.getString("mongo.rawDataCollection") )
 
   // Close all things
   override def end: Unit = sparkManager.stop

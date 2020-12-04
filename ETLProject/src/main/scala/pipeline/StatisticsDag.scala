@@ -1,8 +1,8 @@
-package etl.pipeline
+package pipeline
 
-import etl.sparksessionmanager.SessionManager
-import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import com.typesafe.config.ConfigFactory
+import sparksessionmanager.SessionManager
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 
 
@@ -10,7 +10,7 @@ class CrimeTypeKPIDag(df: DataFrame)(implicit private val sparkManager: SessionM
   val spark = sparkManager.spark
   import spark.implicits._
 
-  val COLLECTION_NAME = sys.env.getOrElse("CRIME_TYPE_COLLECTION_NAME", "crime_type_stats")
+  lazy val config = ConfigFactory.load()
 
   override def getDag: DataFrame =
     // count
@@ -18,7 +18,7 @@ class CrimeTypeKPIDag(df: DataFrame)(implicit private val sparkManager: SessionM
       .agg(count($"crimeID").as("count"))
       .orderBy($"count".desc)
 
-  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, COLLECTION_NAME)
+  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, config.getString("mongo.crimeTypeStatsCollection"))
 
   override def end: Unit = sparkManager.stop
 }
@@ -26,8 +26,7 @@ class CrimeTypeKPIDag(df: DataFrame)(implicit private val sparkManager: SessionM
 class DistrictKPIDag(df: DataFrame)(implicit private val sparkManager: SessionManager) extends BaseDag {
   val spark = sparkManager.spark
   import spark.implicits._
-
-  val COLLECTION_NAME = sys.env.getOrElse("DISTRICT_COLLECTION_NAME", "district_stats")
+  lazy val config = ConfigFactory.load()
 
   override def getDag: DataFrame =
     df.groupBy("districtName")
@@ -35,7 +34,7 @@ class DistrictKPIDag(df: DataFrame)(implicit private val sparkManager: SessionMa
       .orderBy($"count".desc)
 
 
-  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, COLLECTION_NAME)
+  override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, config.getString("mongo.districtStatsCollection"))
 
   override def end: Unit = sparkManager.stop
 }

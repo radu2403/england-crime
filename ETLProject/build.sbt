@@ -1,3 +1,5 @@
+name := "ETLProject"
+
 name := "england-crime"
 
 version := "0.1"

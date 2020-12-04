@@ -1,15 +1,16 @@
-package etl.pipeline
+package pipeline
 
-import etl.sparksessionmanager.SessionManager
+import com.typesafe.config.ConfigFactory
+import sparksessionmanager.SessionManager
 import org.apache.spark.sql.DataFrame
 
 class FactoryPipeline(implicit private val sparkManager: SessionManager) {
-  private val STREET_PATH = sys.env.getOrElse("DATA_STREET_PATH", "./data/*/*-street.csv")
-  private val OUTCOME_PATH = sys.env.getOrElse("DATA_OUTCOME_PATH", "./data/*/*-outcomes.csv")
+  lazy val config = ConfigFactory.load()
 
   //  The pipeline creation
   def getEtlDag(): BaseDag = {
-    new ImportDag(STREET_PATH, OUTCOME_PATH)
+    new ImportDag(config.getString("mongo.dataStreetPath"),
+                  config.getString("mongo.dataOutcomePath"))
   }
 
   def getCrimeTypeDag(df: DataFrame): BaseDag = {

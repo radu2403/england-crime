@@ -14,7 +14,7 @@ import akka.stream.{ActorMaterializer, Materializer}
 
 import scala.concurrent.ExecutionContext
 
-class Endpoints(userEndpoint: UserEndpoint,
+class Endpoints(
                 healthCheckEndpoint: HealthCheckEndpoint,
                 felonyEndpoint: FelonyEndpoint,
                 districtEndpoint: DistrictEndpoint
@@ -24,7 +24,7 @@ class Endpoints(userEndpoint: UserEndpoint,
              mat: ActorMaterializer,
              ec: ExecutionContext) = loggableRoute {
     Route.seal {
-      userEndpoint.userRoutes ~ healthCheckEndpoint.healthCheckRoute ~ felonyEndpoint.felonyRoutes ~ districtEndpoint.districtRoutes
+        healthCheckEndpoint.healthCheckRoute ~ felonyEndpoint.felonyRoutes ~ districtEndpoint.districtRoutes
     }
   }
 

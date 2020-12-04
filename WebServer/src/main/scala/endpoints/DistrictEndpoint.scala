@@ -19,8 +19,8 @@ class DistrictEndpoint(repository: DistrictRepository)(implicit ec: ExecutionCon
 
       (get & path(Segment).as(FindAllByPage)) { request =>
         onComplete(repository.findAll(request.page.toInt)) {
-          case Success(Some(felony)) =>  complete( Marshal(felony).to[ResponseEntity].map { e => HttpResponse(entity = e) })
-          case Success(None)       =>
+          case Success(districts: Seq[Some[DistrictStats]]) =>  complete( Marshal(districts).to[ResponseEntity].map { e => HttpResponse(entity = e) })
+          case Success(none: Seq[Option[DistrictStats]])       =>
             complete(HttpResponse(status = StatusCodes.NotFound))
           case Failure(e)          =>
             complete(Marshal(Message(e.getMessage)).to[ResponseEntity].map { e => HttpResponse(entity = e, status = StatusCodes.InternalServerError) })

@@ -23,15 +23,15 @@ case class Felony(_id: ObjectId,
                   lastOutcome: String	)
 
 object Felony {
-  implicit val encoder: Encoder[Felony] = (f: Felony) => {
+  implicit val encoder: Encoder[Felony] = (a: Felony) => {
     Json.obj(
-      "id" -> f._id.toHexString.asJson,
-      "crimeID" -> f.crimeID.asJson,
-      "districtName" -> f.districtName.asJson,
-      "latitude" -> f.latitude.asJson,
-      "longitude" -> f.longitude.asJson,
-      "crimeType" -> f.crimeType.asJson,
-      "lastOutcome" -> f.lastOutcome.asJson
+      "id" -> a._id.toHexString.asJson,
+      "crimeID" -> a.crimeID.asJson,
+      "districtName" -> a.districtName.asJson,
+      "latitude" -> a.latitude.asJson,
+      "longitude" -> a.longitude.asJson,
+      "crimeType" -> a.crimeType.asJson,
+      "lastOutcome" -> a.lastOutcome.asJson
     )
   }
 
@@ -47,66 +47,41 @@ object Felony {
   }
 }
 
-case class CrimeTypeStats(_id: ObjectId, crimeType: String, count: Int)
+case class CrimeTypeStats(_id: ObjectId, crimeType: String, count: Long)
 
 object CrimeTypeStats {
-  implicit val encoder: Encoder[CrimeTypeStats] = (f: CrimeTypeStats) => {
+  implicit val encoder: Encoder[CrimeTypeStats] = (a: CrimeTypeStats) => {
     Json.obj(
-      "id" -> f._id.toHexString.asJson,
-      "crimeType" -> f.crimeType.asJson,
-      "count" -> f.count.asJson
+      "id" -> a._id.toHexString.asJson,
+      "crimeType" -> a.crimeType.asJson,
+      "count" -> a.count.asJson
     )
   }
 
   implicit val decoder: Decoder[CrimeTypeStats] = (c: HCursor) => {
     for {
       crimeType <- c.downField("crimeType").as[String]
-      count <- c.downField("count").as[Int]
+      count <- c.downField("count").as[Long]
     } yield CrimeTypeStats(ObjectId.get(), crimeType, count)
   }
 }
 
-case class DistrictStats(_id: ObjectId, districtName: String, count: Int)
+case class DistrictStats(_id: ObjectId, districtName: String, count: Long)
 
 object DistrictStats {
-  implicit val encoder: Encoder[DistrictStats] = (f: DistrictStats) => {
-    Json.obj(
-      "id" -> f._id.toHexString.asJson,
-      "districtName" -> f.districtName.asJson,
-      "count" -> f.count.asJson
-    )
-  }
-
-  implicit val decoder: Decoder[DistrictStats] = (c: HCursor) => {
-    for {
-      districtName <- c.downField("districtName").as[String]
-      count <- c.downField("count").as[Int]
-    } yield DistrictStats(ObjectId.get(), districtName, count)
-  }
-}
-
-
-case class User(_id: ObjectId, username: String, age: Int) {
-  require(username != null, "username not informed")
-  require(username.nonEmpty, "username cannot be empty")
-  require(age > 0, "age cannot be lower than 1")
-}
-
-object User {
-  implicit val encoder: Encoder[User] = (a: User) => {
-    Json.obj(
-      "id" -> a._id.toHexString.asJson,
-      "username" -> a.username.asJson,
-      "age" -> a.age.asJson
-    )
-  }
-
-  implicit val decoder: Decoder[User] = (c: HCursor) => {
-    for {
-      username <- c.downField("username").as[String]
-      age <- c.downField("age").as[Int]
-    } yield User(ObjectId.get(), username, age)
-  }
+    implicit val encoder: Encoder[DistrictStats] = (f: DistrictStats) => {
+      Json.obj(
+        "id" -> f._id.toHexString.asJson,
+        "districtName" -> f.districtName.asJson,
+        "count" -> f.count.asJson
+      )
+    }
+    implicit val decoder: Decoder[DistrictStats] = (c: HCursor) => {
+      for {
+        districtName <- c.downField("districtName").as[String]
+        count <- c.downField("count").as[Long]
+      } yield DistrictStats(ObjectId.get(), districtName, count)
+    }
 }
 
 case class Message(message: String)

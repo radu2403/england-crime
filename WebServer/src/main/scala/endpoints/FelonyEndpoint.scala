@@ -20,8 +20,8 @@ class FelonyEndpoint(repository: FelonyRepository)(implicit ec: ExecutionContext
 
       (get & path(Segment).as(FindAllByPage)) { request =>
         onComplete(repository.findAll(request.page.toInt)) {
-          case Success(Some(felony)) =>  complete( Marshal(felony).to[ResponseEntity].map { e => HttpResponse(entity = e) })
-          case Success(None)       =>
+          case Success(felonies: Seq[Some[Felony]]) =>  complete( Marshal(felonies).to[ResponseEntity].map { e => HttpResponse(entity = e) })
+          case Success(felonies: Seq[Option[Felony]])       =>
             complete(HttpResponse(status = StatusCodes.NotFound))
           case Failure(e)          =>
             complete(Marshal(Message(e.getMessage)).to[ResponseEntity].map { e => HttpResponse(entity = e, status = StatusCodes.InternalServerError) })

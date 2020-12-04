@@ -9,14 +9,14 @@ class FelonyRepository(collection: MongoCollection[Felony])(implicit ec: Executi
 
   val valuesPerPage = 100
 
-  def findAll(pageNumber: Int): Future[Option[Felony]] = {
+  def findAll(pageNumber: Int): Future[Seq[Option[Felony]]] = {
     println("************in felony****************")
     collection.find()
               .skip(valuesPerPage * (pageNumber-1))
               .limit(valuesPerPage)
               .map(Option(_))
-      //       .toFuture()
-              .head()
+             .toFuture()
+//              .head()
   }
 
 

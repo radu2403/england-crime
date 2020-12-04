@@ -1,4 +1,4 @@
-package web.endpoints
+package endpoints
 
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
@@ -8,8 +8,8 @@ import akka.stream.Materializer
 
 import de.heikoseeberger.akkahttpcirce.ErrorAccumulatingCirceSupport._
 
-import web.models._
-import web.models.repository._
+import models._
+import models.repository._
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}

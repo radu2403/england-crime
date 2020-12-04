@@ -1,4 +1,4 @@
-package web.models
+package models
 
 import io.circe.syntax._
 import io.circe._

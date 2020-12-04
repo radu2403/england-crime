@@ -1,7 +1,7 @@
-package web.models.repository
+package models.repository
 
 import org.mongodb.scala.MongoCollection
-import web.models.Felony
+import models.Felony
 
 import scala.concurrent.{ExecutionContext, Future}
 

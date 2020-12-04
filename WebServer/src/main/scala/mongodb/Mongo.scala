@@ -1,10 +1,10 @@
-package web.mongodb
+package mongodb
 
 
 import com.typesafe.config.ConfigFactory
 import org.bson.codecs.configuration.CodecRegistries._
 import org.mongodb.scala._
-import web.models.{CrimeTypeStats, DistrictStats, Felony, User}
+import models.{CrimeTypeStats, DistrictStats, Felony, User}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 

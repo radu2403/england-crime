@@ -1,12 +1,12 @@
-package web.modules
+package modules
 
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.softwaremill.macwire._
-import web.endpoints.{Endpoints, FelonyEndpoint, HealthCheckEndpoint, UserEndpoint}
-import web.models.repository.{FelonyRepository, UserRepository}
-import web.mongodb.Mongo
+import endpoints.{Endpoints, FelonyEndpoint, HealthCheckEndpoint, UserEndpoint}
+import models.repository.{FelonyRepository, UserRepository}
+import mongodb.Mongo
 
 import scala.concurrent.ExecutionContext
 

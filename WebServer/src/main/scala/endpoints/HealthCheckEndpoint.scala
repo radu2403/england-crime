@@ -1,4 +1,4 @@
-package web.endpoints
+package endpoints
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route

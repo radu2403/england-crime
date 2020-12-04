@@ -1,8 +1,10 @@
+import modules.AllModules
 
 import akka.http.scaladsl.Http
-import web.modules.AllModules
+import modules.AllModules
 
 import scala.util.{Failure, Success}
+
 
 object Application extends App {
   val modules = new AllModules

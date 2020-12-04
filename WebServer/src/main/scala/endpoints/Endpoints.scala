@@ -1,4 +1,4 @@
-package web.endpoints
+package endpoints
 
 import java.lang.System.currentTimeMillis
 

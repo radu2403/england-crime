@@ -1,6 +1,6 @@
-package web.models.repository
+package models.repository
 
-import web.models.User
+import models.User
 import org.mongodb.scala._
 import org.mongodb.scala.bson.ObjectId
 

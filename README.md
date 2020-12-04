@@ -79,3 +79,4 @@ Once the server starts it will have active 4 routes on the local machine
 *   Add a load-balancer
 *   Deploy it in Kubernetes for scaling
 *   Add new KPIs
+*   If the model requires it, add pagination information

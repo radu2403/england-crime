@@ -57,3 +57,25 @@ Once the ETL completes there will be 3 Collections in the Database `spark`:
 *   Containerize the solution
 *   Expose Spark as a distributed solution on a managed cluster
 *   Extend the solution with different persistence capabilities
+
+### Web project
+#### It's composed out of
+*   Application.scala - main starting point
+*   resource folder   - properties of program
+*   endpoints         - classes that describe the routes
+*   models            - the data entities that help bring data from the database
+*   modules           - setup for dependency injection
+*   mongodb           - MongoDB files and setup
+
+#### Existing work
+Once the server starts it will have active 4 routes on the local machine
+*   Felony data:           http://localhost:8080/api/felony/{pageNumber}
+*   Crime type statistics: http://localhost:8080/api/crimetype/{pageNumber}
+*   District statistics:   http://localhost:8080/api/district/{pageNumber}
+*   Health status:         http://localhost:8080/api/health-check
+
+#### Future improvements
+*   Containerize the solution
+*   Add a load-balancer
+*   Deploy it in Kubernetes for scaling
+*   Add new KPIs

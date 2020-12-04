@@ -4,6 +4,7 @@ import java.io.File
 import com.typesafe.config.ConfigFactory
 import etl.sparksessionmanager.SessionManager
 import org.apache.spark.sql.functions.{count, input_file_name, udf, when}
+import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implicit private val sparkManager: SessionManager) extends BaseDag {
@@ -44,12 +45,12 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
             .withColumn("lastOutcome",
                         when($"outcomeType".isNotNull, $"outcomeType").otherwise($"lastOutcomeCategory")
             )
-            .select($"crimeID",
-                    $"districtName",
-                    $"latitude",
-                    $"longitude",
-                    $"crimeType",
-                    $"lastOutcome"
+            .select($"crimeID".cast(StringType),
+                    $"districtName".cast(StringType),
+                    $"latitude".cast(StringType),
+                    $"longitude".cast(StringType),
+                    $"crimeType".cast(StringType),
+                    $"lastOutcome".cast(StringType)
             )
   }
 
@@ -96,6 +97,7 @@ class ImportDag(val streetDataPath: String, val outcomeDataPath: String)(implici
       .option("header", "true")
       .csv(csvPath)
       .withColumn("districtName", input_file_name())
+    .limit(1000)
 
   // Write DAG
   override def writeDataFrame(df: DataFrame): Unit = sparkManager.write(df, collectionName = config.getString("mongo.rawDataCollection") )

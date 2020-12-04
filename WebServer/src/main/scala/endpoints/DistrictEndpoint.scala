@@ -13,10 +13,9 @@ import models.repository._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class FelonyEndpoint(repository: FelonyRepository)(implicit ec: ExecutionContext, mat: Materializer) {
-
-  val felonyRoutes =
-    pathPrefix("api" / "felony") {
+class DistrictEndpoint(repository: DistrictRepository)(implicit ec: ExecutionContext, mat: Materializer) {
+  val districtRoutes =
+    pathPrefix("api" / "district") {
 
       (get & path(Segment).as(FindAllByPage)) { request =>
         onComplete(repository.findAll(request.page.toInt)) {
@@ -26,7 +25,6 @@ class FelonyEndpoint(repository: FelonyRepository)(implicit ec: ExecutionContext
           case Failure(e)          =>
             complete(Marshal(Message(e.getMessage)).to[ResponseEntity].map { e => HttpResponse(entity = e, status = StatusCodes.InternalServerError) })
         }
-//        complete("okkkk")
       }
     }
 }

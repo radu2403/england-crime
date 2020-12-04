@@ -14,9 +14,10 @@ class FelonyRepository(collection: MongoCollection[Felony])(implicit ec: Executi
     collection.find()
               .skip(valuesPerPage * (pageNumber-1))
               .limit(valuesPerPage)
-              .map(Option(_)).head()
+              .map(Option(_))
+      //       .toFuture()
+              .head()
   }
 
-  //              .toFuture()
 
 }

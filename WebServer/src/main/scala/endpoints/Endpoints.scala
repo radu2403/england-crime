@@ -17,14 +17,18 @@ import scala.concurrent.ExecutionContext
 class Endpoints(
                 healthCheckEndpoint: HealthCheckEndpoint,
                 felonyEndpoint: FelonyEndpoint,
-                districtEndpoint: DistrictEndpoint
+                districtEndpoint: DistrictEndpoint,
+                crimeTypeEndpoint: CrimeTypeEndpoint
                ) {
   def routes(implicit
              sys: ActorSystem,
              mat: ActorMaterializer,
              ec: ExecutionContext) = loggableRoute {
     Route.seal {
-        healthCheckEndpoint.healthCheckRoute ~ felonyEndpoint.felonyRoutes ~ districtEndpoint.districtRoutes
+        healthCheckEndpoint.healthCheckRoute ~
+          felonyEndpoint.felonyRoutes ~
+          districtEndpoint.districtRoutes ~
+          crimeTypeEndpoint.crimeTypeRoutes
     }
   }
 

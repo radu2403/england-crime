@@ -1,6 +1,6 @@
 package models.repository
 
-import models.{DistrictStats, Felony}
+import models.{DistrictStats}
 import org.mongodb.scala.MongoCollection
 
 import scala.concurrent.{ExecutionContext, Future}
